@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Home from "../pages/Home";
-import Alumnos from "../pages/Alumnos";
-import Docentes from "../pages/Docentes";
-import Pagos from "../pages/Pagos";
-import Reportes from "../pages/Reportes";
+import Home from "../pages/home/Home";
+import Alumnos from "../pages/alumnos/Alumnos";
+import Docentes from "../pages/docentes/Docentes";
+import Pagos from "../pages/pagos/Pagos";
+import Reportes from "../pages/reportes/Reportes";
 
 function AppRoutes() {
   return (
