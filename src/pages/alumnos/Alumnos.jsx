@@ -10,7 +10,7 @@ function Alumnos() {
   const [cursos] = useState([
     { id: 1, nombre: "Matemáticas" },
     { id: 2, nombre: "Historia" },
-  ]);
+  ]); //Datos simulados hasta que tengamos el back, ademas faltaria añadir mas campos
 
   const [formulario, setFormulario] = useState({
     id: null,
@@ -35,6 +35,13 @@ function Alumnos() {
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setFormulario({ ...formulario, [name]: value });
+  };
+
+  const eliminarAlumno = (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de eliminar este alumno?");
+    if (confirmacion) {
+      setAlumnos(alumnos.filter((alumno) => alumno.id !== id));
+    }
   };
 
   const guardarAlumno = () => {
@@ -93,7 +100,7 @@ function Alumnos() {
                   <button
                     className="btn btn-danger btn-sm"
                     onClick={() =>
-                      setAlumnos(alumnos.filter((a) => a.id !== alumno.id))
+                      eliminarAlumno(alumno.id)
                     }
                   >
                     Eliminar
