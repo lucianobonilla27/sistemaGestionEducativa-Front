@@ -1,0 +1,68 @@
+{
+  "alumnos": [
+    {
+      "id": "1",
+      "nombre": "Juan Pérez",
+      "cursos": [
+        "1",
+        "2"
+      ],
+      "estado": "Activo"
+    },
+    {
+      "id": "2",
+      "nombre": "Ana García",
+      "cursos": [
+        "3"
+      ],
+      "estado": "Inactivo"
+    }
+  ],
+  "docentes": [
+    {
+      "id": "1",
+      "nombre": "María López",
+      "cursos": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "2",
+      "nombre": "José Martínez",
+      "cursos": [
+        "3"
+      ]
+    }
+  ],
+  "cursos": [
+    {
+      "id": "1",
+      "nombre": "Matemáticas"
+    },
+    {
+      "id": "2",
+      "nombre": "Historia"
+    },
+    {
+      "id": "3",
+      "nombre": "Física"
+    }
+  ],
+  "pagos": [
+    {
+      "id": "1",
+      "alumnoId": "1",
+      "concepto": "Matrícula",
+      "monto": 5000,
+      "estado": "Pendiente"
+    },
+    {
+      "id": "2",
+      "alumnoId": "2",
+      "concepto": "Cuota Mensual",
+      "monto": 2500,
+      "estado": "Completado"
+    }
+  ]
+}

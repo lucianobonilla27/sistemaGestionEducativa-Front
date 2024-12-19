@@ -1,31 +1,27 @@
 import { useState } from "react";
-import "./Alumnos.css";
+import "./alumnos.css";
+import { useAlumnos } from "../../context/AlumnosContext";
+import { useCursos } from "../../context/CursosContext";
 
 function Alumnos() {
-  const [alumnos, setAlumnos] = useState([
-    { id: 1, nombre: "Juan Pérez", cursoId: 1, estado: "Activo" },
-    { id: 2, nombre: "Ana García", cursoId: 2, estado: "Inactivo" },
-  ]);
-
-  const [cursos] = useState([
-    { id: 1, nombre: "Matemáticas" },
-    { id: 2, nombre: "Historia" },
-  ]); //Datos simulados hasta que tengamos el back, ademas faltaria añadir mas campos
+  const { alumnos, agregarAlumno, editarAlumno, eliminarAlumno } = useAlumnos();
+  const { cursos } = useCursos();
 
   const [formulario, setFormulario] = useState({
     id: null,
     nombre: "",
-    cursoId: "",
+    cursos: [],
     estado: "Activo",
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [alumnoAEliminar, setAlumnoAEliminar] = useState(null);
 
   const abrirModal = (alumno = null) => {
     if (alumno) {
-      setFormulario(alumno);
+      setFormulario({ ...alumno });
     } else {
-      setFormulario({ id: null, nombre: "", cursoId: "", estado: "Activo" });
+      setFormulario({ id: null, nombre: "", cursos: [], estado: "Activo" });
     }
     setShowModal(true);
   };
@@ -37,45 +33,48 @@ function Alumnos() {
     setFormulario({ ...formulario, [name]: value });
   };
 
-  const eliminarAlumno = (id) => {
-    const confirmacion = window.confirm("¿Estás seguro de eliminar este alumno?");
-    if (confirmacion) {
-      setAlumnos(alumnos.filter((alumno) => alumno.id !== id));
-    }
+  const manejarCursos = (cursoId) => {
+    setFormulario((prev) => ({
+      ...prev,
+      cursos: prev.cursos.includes(cursoId)
+        ? prev.cursos.filter((curso) => curso !== cursoId)
+        : [...prev.cursos, cursoId],
+    }));
   };
 
   const guardarAlumno = () => {
     if (formulario.id) {
-      setAlumnos(
-        alumnos.map((alumno) =>
-          alumno.id === formulario.id ? formulario : alumno
-        )
-      );
+      editarAlumno(formulario);
     } else {
-      setAlumnos([
-        ...alumnos,
-        { ...formulario, id: Date.now(), cursoId: parseInt(formulario.cursoId) },
-      ]);
+      agregarAlumno({ ...formulario, id: crypto.randomUUID()});
     }
     cerrarModal();
+  };
+
+  const confirmarEliminarAlumno = (id) => {
+    setAlumnoAEliminar(id);
+  };
+
+  const cancelarEliminar = () => setAlumnoAEliminar(null);
+
+  const confirmarEliminar = () => {
+    eliminarAlumno(alumnoAEliminar);
+    setAlumnoAEliminar(null);
   };
 
   return (
     <div className="alumnos-container">
       <h1 className="text-center my-4">Gestión de Alumnos</h1>
-      <button
-        className="btn btn-primary mb-3"
-        onClick={() => abrirModal(null)}
-      >
+      <button className="btn btn-primary mb-3" onClick={() => abrirModal(null)}>
         Agregar Alumno
       </button>
+
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
           <thead className="table-primary">
             <tr>
-              <th>#</th>
               <th>Nombre</th>
-              <th>Curso</th>
+              <th>Cursos</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -83,11 +82,12 @@ function Alumnos() {
           <tbody>
             {alumnos.map((alumno) => (
               <tr key={alumno.id}>
-                <td>{alumno.id}</td>
                 <td>{alumno.nombre}</td>
                 <td>
-                  {cursos.find((curso) => curso.id === alumno.cursoId)?.nombre ||
-                    "Sin Curso"}
+                  {cursos
+                    .filter((curso) => alumno.cursos.includes(curso.id))
+                    .map((curso) => curso.nombre)
+                    .join(", ") || "Sin Cursos"}
                 </td>
                 <td>{alumno.estado}</td>
                 <td>
@@ -99,9 +99,7 @@ function Alumnos() {
                   </button>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() =>
-                      eliminarAlumno(alumno.id)
-                    }
+                    onClick={() => confirmarEliminarAlumno(alumno.id)}
                   >
                     Eliminar
                   </button>
@@ -112,7 +110,31 @@ function Alumnos() {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal de confirmación para eliminar */}
+      {alumnoAEliminar && (
+        <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirmar eliminación</h5>
+              </div>
+              <div className="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este alumno?</p>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={cancelarEliminar}>
+                  Cancelar
+                </button>
+                <button className="btn btn-danger" onClick={confirmarEliminar}>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de formulario */}
       {showModal && (
         <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
@@ -121,63 +143,45 @@ function Alumnos() {
                 <h5 className="modal-title">
                   {formulario.id ? "Editar Alumno" : "Agregar Alumno"}
                 </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={cerrarModal}
-                ></button>
+                <button type="button" className="btn-close" onClick={cerrarModal}></button>
               </div>
               <div className="modal-body">
-                <div className="mb-3">
-                  <label className="form-label">Nombre</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="nombre"
-                    value={formulario.nombre}
-                    onChange={manejarCambio}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Curso</label>
-                  <select
-                    className="form-select"
-                    name="cursoId"
-                    value={formulario.cursoId}
-                    onChange={manejarCambio}
-                  >
-                    <option value="">Seleccione un curso</option>
-                    {cursos.map((curso) => (
-                      <option key={curso.id} value={curso.id}>
-                        {curso.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Estado</label>
-                  <select
-                    className="form-select"
-                    name="estado"
-                    value={formulario.estado}
-                    onChange={manejarCambio}
-                  >
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                  </select>
-                </div>
+                <label>Nombre</label>
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  name="nombre"
+                  value={formulario.nombre}
+                  onChange={manejarCambio}
+                />
+                <label>Cursos</label>
+                {cursos.map((curso) => (
+                  <div key={curso.id} className="form-check mb-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={formulario.cursos.includes(curso.id)}
+                      onChange={() => manejarCursos(curso.id)}
+                    />
+                    <label>{curso.nombre}</label>
+                  </div>
+                ))}
+                <label>Estado</label>
+                <select
+                  className="form-select"
+                  name="estado"
+                  value={formulario.estado}
+                  onChange={manejarCambio}
+                >
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
               </div>
               <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={cerrarModal}
-                >
+                <button className="btn btn-secondary" onClick={cerrarModal}>
                   Cancelar
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={guardarAlumno}
-                >
+                <button className="btn btn-primary" onClick={guardarAlumno}>
                   Guardar
                 </button>
               </div>
