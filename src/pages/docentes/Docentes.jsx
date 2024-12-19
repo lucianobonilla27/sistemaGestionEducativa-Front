@@ -1,118 +1,91 @@
 import { useState } from "react";
+import { useDocentes } from "../../context/DocentesContext";
+import { useCursos } from "../../context/CursosContext";
 import "./docentes.css";
 
 function Docentes() {
-  // Datos simulados
-  const [docentes, setDocentes] = useState([
-    { id: 1, nombre: "María López", cursos: [1, 2] },
-    { id: 2, nombre: "José Martínez", cursos: [3] },
-  ]);
+  const { docentes, agregarDocente, editarDocente, eliminarDocente } = useDocentes();
+  const { cursos } = useCursos();
 
-  const [cursos] = useState([
-    { id: 1, nombre: "Matemáticas" },
-    { id: 2, nombre: "Historia" },
-    { id: 3, nombre: "Física" },
-  ]);
-
-  // Estado para manejar el modal
   const [formulario, setFormulario] = useState({
     id: null,
     nombre: "",
-    cursos: [],
+    cursos: [], // Array para los IDs de cursos asignados como cadenas
+    estado: "Activo",
   });
-  const [showModal, setShowModal] = useState(false);
 
-  // Función para abrir el modal
+  const [showModal, setShowModal] = useState(false);
+  const [docenteAEliminar, setDocenteAEliminar] = useState(null);
+
   const abrirModal = (docente = null) => {
     if (docente) {
-      setFormulario(docente);
+      setFormulario({ ...docente });
     } else {
-      setFormulario({ id: null, nombre: "", cursos: [] });
+      setFormulario({ id: null, nombre: "", cursos: [], estado: "Activo" });
     }
     setShowModal(true);
   };
 
-  // Función para cerrar el modal
   const cerrarModal = () => setShowModal(false);
 
-  // Función para manejar cambios en el formulario
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setFormulario({ ...formulario, [name]: value });
   };
 
-  // Función para manejar la selección de cursos
   const manejarCursos = (cursoId) => {
-    const cursoSeleccionado = parseInt(cursoId, 10);
-    if (formulario.cursos.includes(cursoSeleccionado)) {
-      setFormulario({
-        ...formulario,
-        cursos: formulario.cursos.filter((id) => id !== cursoSeleccionado),
-      });
-    } else {
-      setFormulario({ ...formulario, cursos: [...formulario.cursos, cursoSeleccionado] });
-    }
+    setFormulario((prev) => ({
+      ...prev,
+      cursos: prev.cursos.includes(cursoId)
+        ? prev.cursos.filter((curso) => curso !== cursoId) // Remover si ya está seleccionado
+        : [...prev.cursos, cursoId], // Agregar si no está seleccionado
+    }));
   };
 
-  // Función para guardar un docente
   const guardarDocente = () => {
     if (formulario.id) {
-      // Editar docente existente
-      setDocentes(
-        docentes.map((docente) =>
-          docente.id === formulario.id ? formulario : docente
-        )
-      );
+      editarDocente(formulario);
     } else {
-      // Agregar nuevo docente
-      setDocentes([
-        ...docentes,
-        { ...formulario, id: Date.now() },
-      ]);
+      agregarDocente({ ...formulario, id: crypto.randomUUID()})
     }
     cerrarModal();
   };
 
-  const eliminarDocente = (id) => {
-    const confirmacion = window.confirm("¿Estás seguro de eliminar este docente?");
-    if (confirmacion) {
-      setDocentes(docentes.filter((docente) => docente.id !== id));
-    }
-  };
-
-  // Función para obtener los nombres de los cursos
-  const obtenerNombreCursos = (cursosIds) => {
-    return cursos
-      .filter((curso) => cursosIds.includes(curso.id))
-      .map((curso) => curso.nombre)
-      .join(", ");
+  const confirmarEliminarDocente = (id) => setDocenteAEliminar(id);
+  const cancelarEliminar = () => setDocenteAEliminar(null);
+  const confirmarEliminar = () => {
+    eliminarDocente(docenteAEliminar);
+    setDocenteAEliminar(null);
   };
 
   return (
     <div className="docentes-container">
       <h1 className="text-center my-4">Gestión de Docentes</h1>
-      <button
-        className="btn btn-primary mb-3"
-        onClick={() => abrirModal(null)}
-      >
+      <button className="btn btn-primary mb-3" onClick={() => abrirModal(null)}>
         Agregar Docente
       </button>
+
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
           <thead className="table-primary">
             <tr>
-              <th>#</th>
               <th>Nombre</th>
-              <th>Cursos Asignados</th>
+              <th>Cursos</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {docentes.map((docente) => (
               <tr key={docente.id}>
-                <td>{docente.id}</td>
                 <td>{docente.nombre}</td>
-                <td>{obtenerNombreCursos(docente.cursos)}</td>
+                <td>
+                  {cursos
+                    .filter((curso) => docente.cursos.includes(curso.id)) // Comparación con IDs como cadenas
+                    .map((curso) => curso.nombre)
+                    .join(", ") || "Sin Cursos"}
+                </td>
+                <td>{docente.estado}</td>
                 <td>
                   <button
                     className="btn btn-warning btn-sm me-2"
@@ -122,7 +95,7 @@ function Docentes() {
                   </button>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => eliminarDocente(docente.id)}
+                    onClick={() => confirmarEliminarDocente(docente.id)}
                   >
                     Eliminar
                   </button>
@@ -133,7 +106,31 @@ function Docentes() {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal de confirmación para eliminar */}
+      {docenteAEliminar && (
+        <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirmar eliminación</h5>
+              </div>
+              <div className="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este docente?</p>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={cancelarEliminar}>
+                  Cancelar
+                </button>
+                <button className="btn btn-danger" onClick={confirmarEliminar}>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de formulario */}
       {showModal && (
         <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
@@ -149,48 +146,43 @@ function Docentes() {
                 ></button>
               </div>
               <div className="modal-body">
-                <div className="mb-3">
-                  <label className="form-label">Nombre</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="nombre"
-                    value={formulario.nombre}
-                    onChange={manejarCambio}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Cursos</label>
-                  {cursos.map((curso) => (
-                    <div key={curso.id} className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id={`curso-${curso.id}`}
-                        checked={formulario.cursos.includes(curso.id)}
-                        onChange={() => manejarCursos(curso.id)}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`curso-${curso.id}`}
-                      >
-                        {curso.nombre}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                <label>Nombre</label>
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  name="nombre"
+                  value={formulario.nombre}
+                  onChange={manejarCambio}
+                />
+                <label>Cursos</label>
+                {cursos.map((curso) => (
+                  <div key={curso.id} className="form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id={`curso-${curso.id}`}
+                      checked={formulario.cursos.includes(curso.id)} // Comparación con IDs como cadenas
+                      onChange={() => manejarCursos(curso.id)} // Usar ID como cadena
+                    />
+                    <label htmlFor={`curso-${curso.id}`}>{curso.nombre}</label>
+                  </div>
+                ))}
+                <label>Estado</label>
+                <select
+                  className="form-select"
+                  name="estado"
+                  value={formulario.estado}
+                  onChange={manejarCambio}
+                >
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
               </div>
               <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={cerrarModal}
-                >
+                <button className="btn btn-secondary" onClick={cerrarModal}>
                   Cancelar
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={guardarDocente}
-                >
+                <button className="btn btn-primary" onClick={guardarDocente}>
                   Guardar
                 </button>
               </div>

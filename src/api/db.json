@@ -25,14 +25,24 @@
       "cursos": [
         "1",
         "2"
-      ]
+      ],
+      "estado": "Activo"
     },
     {
       "id": "2",
       "nombre": "José Martínez",
       "cursos": [
+        "2"
+      ],
+      "estado": "Inactivo"
+    },
+    {
+      "id": "08a3eecd-1c05-448c-9b2d-061fb7b024df",
+      "nombre": "Federico Bonilla",
+      "cursos": [
         "3"
-      ]
+      ],
+      "estado": "Inactivo"
     }
   ],
   "cursos": [

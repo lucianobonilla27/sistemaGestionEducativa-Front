@@ -5,13 +5,16 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AlumnosProvider } from "./context/AlumnosContext";
 import { CursosProvider } from "./context/CursosContext";
+import { DocentesProvider } from "./context/DocentesContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AlumnosProvider>
-      <CursosProvider>
-        <App />
-      </CursosProvider>
+      <DocentesProvider>
+        <CursosProvider>
+          <App />
+        </CursosProvider>
+      </DocentesProvider>
     </AlumnosProvider>
   </React.StrictMode>
 );
