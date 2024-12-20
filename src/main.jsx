@@ -6,13 +6,16 @@ import App from "./App";
 import { AlumnosProvider } from "./context/AlumnosContext";
 import { CursosProvider } from "./context/CursosContext";
 import { DocentesProvider } from "./context/DocentesContext";
+import { PagosProvider } from "./context/PagosContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AlumnosProvider>
       <DocentesProvider>
         <CursosProvider>
-          <App />
+          <PagosProvider>
+            <App />
+          </PagosProvider>
         </CursosProvider>
       </DocentesProvider>
     </AlumnosProvider>

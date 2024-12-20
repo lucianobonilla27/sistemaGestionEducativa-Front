@@ -16,6 +16,15 @@
         "3"
       ],
       "estado": "Inactivo"
+    },
+    {
+      "id": "98629db6-d74f-420b-8e90-987dd90aadbc",
+      "nombre": "Luciano",
+      "cursos": [
+        "2",
+        "3"
+      ],
+      "estado": "Activo"
     }
   ],
   "docentes": [
@@ -42,7 +51,7 @@
       "cursos": [
         "3"
       ],
-      "estado": "Inactivo"
+      "estado": "Activo"
     }
   ],
   "cursos": [
@@ -73,6 +82,13 @@
       "concepto": "Cuota Mensual",
       "monto": 2500,
       "estado": "Completado"
+    },
+    {
+      "id": "c778d0e9-1f8c-4c1a-a460-fa5ef08637d3",
+      "alumnoId": "98629db6-d74f-420b-8e90-987dd90aadbc",
+      "concepto": "Inscripción",
+      "monto": "4007",
+      "estado": "Pendiente"
     }
   ]
 }
