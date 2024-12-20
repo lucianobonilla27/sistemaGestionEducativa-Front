@@ -18,8 +18,8 @@
       "estado": "Inactivo"
     },
     {
-      "id": "98629db6-d74f-420b-8e90-987dd90aadbc",
-      "nombre": "Luciano",
+      "id": "3",
+      "nombre": "Carlos López",
       "cursos": [
         "2",
         "3"
@@ -89,6 +89,31 @@
       "concepto": "Inscripción",
       "monto": "4007",
       "estado": "Pendiente"
+    }
+  ],
+  "reportes": [
+    {
+      "id": "1",
+      "alumnoId": "1",
+      "cursoId": "1",
+      "nota": 8,
+      "asistencia": "85%"
+    },
+    {
+      "id": "2",
+      "alumnoId": "2",
+      "cursoId": "2",
+      "nota": "5",
+      "asistencia": "90%",
+      "alumnoNombre": "Ana García",
+      "cursoNombre": "Historia"
+    },
+    {
+      "id": "3",
+      "alumnoId": "3",
+      "cursoId": "3",
+      "nota": 9,
+      "asistencia": "95%"
     }
   ]
 }
