@@ -5,6 +5,7 @@ import Alumnos from "../pages/alumnos/Alumnos";
 import Docentes from "../pages/docentes/Docentes";
 import Pagos from "../pages/pagos/Pagos";
 import Reportes from "../pages/reportes/Reportes";
+import Cursos from "../pages/cursos/Cursos";
 
 function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ function AppRoutes() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/cursos" element={<Cursos />} />
           <Route path="/alumnos" element={<Alumnos />} />
           <Route path="/docentes" element={<Docentes />} />
           <Route path="/pagos" element={<Pagos />} />

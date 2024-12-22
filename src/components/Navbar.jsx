@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt } from "react-icons/fa";
+import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook } from "react-icons/fa";
 
 function Navbar() {
   return (
@@ -21,6 +21,11 @@ function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link className="nav-link" to="/cursos">
+                <FaBook className="me-2" /> Cursos
+              </Link>
+            </li>
             <li className="nav-item">
               <Link className="nav-link" to="/alumnos">
                 <FaUserGraduate className="me-2" /> Alumnos
