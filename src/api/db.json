@@ -33,7 +33,8 @@
       "nombre": "María López",
       "cursos": [
         "1",
-        "2"
+        "2",
+        "f79dba2a-29c8-4f16-9695-59eb583a7d52"
       ],
       "estado": "Activo"
     },
@@ -99,18 +100,9 @@
     {
       "id": "1",
       "alumnoId": "1",
-      "cursoId": "1",
+      "cursoId": "2",
       "nota": 8,
       "asistencia": "85%"
-    },
-    {
-      "id": "2",
-      "alumnoId": "2",
-      "cursoId": "2",
-      "nota": "5",
-      "asistencia": "90%",
-      "alumnoNombre": "Ana García",
-      "cursoNombre": "Historia"
     },
     {
       "id": "3",
@@ -118,6 +110,50 @@
       "cursoId": "3",
       "nota": 9,
       "asistencia": "95%"
+    },
+    {
+      "id": "9afe2f86-42e1-48a7-badb-f2b02dbcdf91",
+      "alumnoId": "3",
+      "cursoId": "2",
+      "nota": 5,
+      "asistencia": "50%"
+    },
+    {
+      "id": "f35d704b-f9db-4b5a-ac70-41730ce39def",
+      "alumnoId": "2",
+      "cursoId": "3",
+      "nota": "5",
+      "asistencia": "90%"
+    }
+  ],
+  "usuarios": [
+    {
+      "id": "1",
+      "email": "admin@admin.com",
+      "password": "admin",
+      "role": "admin",
+      "personaId": null
+    },
+    {
+      "id": "2",
+      "email": "docente@docente.com",
+      "password": "docente",
+      "role": "docente",
+      "personaId": "1"
+    },
+    {
+      "id": "3",
+      "email": "alumno@alumno.com",
+      "password": "alumno",
+      "role": "alumno",
+      "personaId": "1"
+    },
+    {
+      "id": "4",
+      "email": "finanzas@finanzas.com",
+      "password": "finanzas",
+      "role": "finanzas",
+      "personaId": null
     }
   ]
 }

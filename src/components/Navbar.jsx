@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
 
 function Navbar() {
+  const { user, logout } = useUser();
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -46,6 +48,11 @@ function Navbar() {
                 <FaFileAlt className="me-2" /> Reportes
               </Link>
             </li>
+            {user && (
+              <button className="btn btn-outline-danger" onClick={logout}>
+                Cerrar Sesión
+              </button>
+            )}
           </ul>
         </div>
       </div>

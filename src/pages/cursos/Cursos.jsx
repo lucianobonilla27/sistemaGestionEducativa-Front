@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { useCursos } from "../../context/CursosContext";
+import { useDocentes } from "../../context/DocentesContext";
+import { useUser } from "../../context/UserContext";
 import "./cursos.css";
 
 function Cursos() {
   const { cursos, crearCurso, editarCurso, eliminarCurso } = useCursos();
+  const { docentes, editarDocente } = useDocentes();
+  const { user } = useUser(); // Usuario actual
   const [formulario, setFormulario] = useState({ id: null, nombre: "" });
   const [showModal, setShowModal] = useState(false);
   const [cursoAEliminar, setCursoAEliminar] = useState(null);
+
+  // Filtrar cursos según el rol del usuario
+  const cursosFiltrados =
+    user.role === "docente"
+      ? cursos.filter((curso) =>
+          docentes.find((docente) => docente.id === user.personaId)?.cursos.includes(curso.id)
+        )
+      : cursos;
 
   const abrirModal = (curso = null) => {
     if (curso) {
@@ -24,11 +36,24 @@ function Cursos() {
     setFormulario({ ...formulario, [name]: value });
   };
 
-  const guardarCurso = () => {
+  const guardarCurso = async () => {
     if (formulario.id) {
-      editarCurso(formulario);
+      editarCurso({ ...formulario });
     } else {
-      crearCurso({ ...formulario, id: crypto.randomUUID() });
+      const nuevoCurso = {
+        ...formulario,
+        id: crypto.randomUUID(),
+      };
+
+      await crearCurso(nuevoCurso);
+
+      if (user.role === "docente") {
+        // Actualizar la lista de cursos del docente actual
+        const docenteActual = docentes.find((docente) => docente.id === user.personaId);
+        await editarDocente( {...docenteActual,
+          cursos: [...(docenteActual.cursos || []), nuevoCurso.id],
+        });
+      }
     }
     cerrarModal();
   };
@@ -37,9 +62,18 @@ function Cursos() {
 
   const cancelarEliminar = () => setCursoAEliminar(null);
 
-  const ejecutarEliminar = () => {
+  const ejecutarEliminar = async () => {
     if (cursoAEliminar) {
-      eliminarCurso(cursoAEliminar);
+      await eliminarCurso(cursoAEliminar);
+
+      if (user.role === "docente") {
+        const docenteActual = docentes.find((docente) => docente.id === user.personaId);
+        const cursosActualizados = docenteActual.cursos.filter(
+          (cursoId) => cursoId !== cursoAEliminar
+        );
+        await actualizarDocente(user.personaId, { cursos: cursosActualizados });
+      }
+
       setCursoAEliminar(null);
     }
   };
@@ -48,9 +82,12 @@ function Cursos() {
     <div className="cursos-container">
       <h1 className="text-center my-4">Gestión de Cursos</h1>
 
-      <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
-        Crear Curso
-      </button>
+      {/* Mostrar botón de crear para admin y docentes */}
+      {(user.role === "admin" || user.role === "docente") && (
+        <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
+          Crear Curso
+        </button>
+      )}
 
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
@@ -62,30 +99,35 @@ function Cursos() {
             </tr>
           </thead>
           <tbody>
-            {cursos.map((curso) => (
+            {cursosFiltrados.map((curso) => (
               <tr key={curso.id}>
                 <td hidden>{curso.id}</td>
                 <td>{curso.nombre}</td>
-                <td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => abrirModal(curso)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => confirmarEliminar(curso.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
+                {(user.role === "admin" || docentes.find((docente) => docente.id === user.personaId)?.cursos.includes(curso.id)) && (
+                  <td>
+                    <button
+                      className="btn btn-warning btn-sm me-2"
+                      onClick={() => abrirModal(curso)}
+                    >
+                      Editar
+                    </button>
+                    {user.role === "admin" && (
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => confirmarEliminar(curso.id)}
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
+      {/* Modal para Crear/Editar Cursos */}
       {showModal && (
         <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
@@ -123,6 +165,7 @@ function Cursos() {
         </div>
       )}
 
+      {/* Modal de Confirmación para Eliminar */}
       {cursoAEliminar && (
         <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">

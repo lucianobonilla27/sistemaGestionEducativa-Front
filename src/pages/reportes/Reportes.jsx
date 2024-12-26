@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useReportes } from "../../context/ReportesContext";
 import { useAlumnos } from "../../context/AlumnosContext";
 import { useCursos } from "../../context/CursosContext";
+import { useUser } from "../../context/UserContext";
 import "./reportes.css";
 
 function Reportes() {
   const { reportes, crearReporte, editarReporte, eliminarReporte } = useReportes();
   const { alumnos } = useAlumnos();
   const { cursos } = useCursos();
+  const { user, persona } = useUser(); // Usuario actual
   const [tipoReporte, setTipoReporte] = useState("Todos");
   const [formulario, setFormulario] = useState({
     id: null,
@@ -17,27 +19,96 @@ function Reportes() {
     asistencia: "",
   });
   const [showModal, setShowModal] = useState(false);
-  const [reporteAEliminar, setReporteAEliminar] = useState(null); // Estado para el reporte a eliminar
+  const [reporteAEliminar, setReporteAEliminar] = useState(null);
+  const [filteredCursos, setFilteredCursos] = useState([]); // Cursos disponibles según el alumno seleccionado
+
+  // Filtrar reportes según el rol del usuario
+  const reportesFiltrados = reportes
+  .filter((reporte) => {
+    if (user.role === "admin") return true; // Admin ve todos los reportes
+    // Docente solo ve los reportes de los cursos que dicta
+    const cursoPerteneceAlDocente = persona?.cursos.includes(reporte.cursoId);
+    return cursoPerteneceAlDocente;
+  })
+  .filter((reporte) => {
+    if (tipoReporte === "Todos") return true;
+    if (tipoReporte === "Aprobados") return reporte.nota >= 7;
+    if (tipoReporte === "Reprobados") return reporte.nota < 7;
+    return true;
+  })
+  .map((reporte) => ({
+    ...reporte,
+    alumnoNombre: alumnos.find((a) => a.id === reporte.alumnoId)?.nombre || "Desconocido",
+    cursoNombre: cursos.find((c) => c.id === reporte.cursoId)?.nombre || "Desconocido",
+  }));
 
   const manejarCambioReporte = (e) => setTipoReporte(e.target.value);
 
   const abrirModal = (reporte = null) => {
     if (reporte) {
       setFormulario({ ...reporte });
+      filtrarCursosPorAlumno(reporte.alumnoId); // Filtrar cursos automáticamente si ya hay un alumno seleccionado
     } else {
       setFormulario({ id: null, alumnoId: "", cursoId: "", nota: "", asistencia: "" });
+      setFilteredCursos([]); // Resetear cursos filtrados
     }
     setShowModal(true);
   };
 
-  const cerrarModal = () => setShowModal(false);
+  const cerrarModal = () => {
+    setShowModal(false);
+    setFilteredCursos([]);
+  };
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setFormulario({ ...formulario, [name]: value });
+
+    if (name === "alumnoId") {
+      filtrarCursosPorAlumno(value);
+    }
   };
 
+  // Filtrar alumnos para mostrar solo aquellos que pertenecen a los cursos del docente
+const alumnosFiltrados = alumnos.filter((alumno) => {
+  if (user.role === "admin") {
+    return true; // Si es admin, muestra todos los alumnos
+  }
+  // Si no es admin, filtra los alumnos que están inscritos en los cursos que el docente dicta
+  return alumno.cursos.some((cursoId) => persona?.cursos.includes(cursoId));
+});
+
+
+const filtrarCursosPorAlumno = (alumnoId) => {
+  if (user.role === "admin") {
+    // Admin puede ver todos los cursos
+    const alumno = alumnos.find((a) => a.id === alumnoId);
+    setFilteredCursos(cursos.filter((curso) => alumno?.cursos.includes(curso.id)));
+  } else {
+    // Docente ve solo los cursos que dicta y que el alumno cursa
+    const alumno = alumnos.find((a) => a.id === alumnoId);
+    if (alumno) {
+      const cursosDisponibles = alumno.cursos.filter((cursoId) =>
+        persona.cursos.includes(cursoId)
+      );
+      setFilteredCursos(cursos.filter((curso) => cursosDisponibles.includes(curso.id)));
+    } else {
+      setFilteredCursos([]);
+    }
+  }
+};
+
+
   const guardarReporte = () => {
+    if (
+      user.role !== "admin" &&
+      (!persona.cursos.includes(formulario.cursoId) ||
+        !alumnos.find((a) => a.id === formulario.alumnoId)?.cursos.includes(formulario.cursoId))
+    ) {
+      alert("No puedes crear reportes para cursos que no dictas o alumnos que no corresponden.");
+      return;
+    }
+
     if (formulario.id) {
       editarReporte(formulario);
     } else {
@@ -46,41 +117,20 @@ function Reportes() {
     cerrarModal();
   };
 
-  const confirmarEliminar = (id) => {
-    setReporteAEliminar(id); // Guardar el reporte a eliminar
-  };
+  const confirmarEliminar = (id) => setReporteAEliminar(id);
 
-  const cancelarEliminar = () => {
-    setReporteAEliminar(null); // Cancelar la eliminación
-  };
+  const cancelarEliminar = () => setReporteAEliminar(null);
 
   const ejecutarEliminar = () => {
     if (reporteAEliminar) {
       eliminarReporte(reporteAEliminar);
-      setReporteAEliminar(null); // Limpiar el estado después de eliminar
+      setReporteAEliminar(null);
     }
-  };
-
-  const resultadosFiltrados = reportes
-    .map((reporte) => ({
-      ...reporte,
-      alumnoNombre: alumnos.find((a) => a.id === reporte.alumnoId)?.nombre || "Desconocido",
-      cursoNombre: cursos.find((c) => c.id === reporte.cursoId)?.nombre || "Desconocido",
-    }))
-    .filter((reporte) => {
-      if (tipoReporte === "Todos") return true;
-      if (tipoReporte === "Aprobados") return reporte.nota >= 7;
-      if (tipoReporte === "Reprobados") return reporte.nota < 7;
-      return true;
-    });
-
-  const exportarReporte = () => {
-    alert("Función de exportar no implementada aún");
   };
 
   return (
     <div className="reportes-container">
-      <h1 className="text-center my-4">Generación de Reportes</h1>
+      <h1 className="text-center my-4">Gestión de Reportes</h1>
 
       <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
         Crear Reporte
@@ -113,7 +163,7 @@ function Reportes() {
             </tr>
           </thead>
           <tbody>
-            {resultadosFiltrados.map((reporte) => (
+            {reportesFiltrados.map((reporte) => (
               <tr key={reporte.id}>
                 <td hidden>{reporte.id}</td>
                 <td>{reporte.alumnoNombre}</td>
@@ -138,12 +188,6 @@ function Reportes() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      <div className="text-center mt-4">
-        <button className="btn btn-primary" onClick={exportarReporte}>
-          Exportar Reporte
-        </button>
       </div>
 
       {/* Modal de confirmación para eliminación */}
@@ -199,7 +243,7 @@ function Reportes() {
                   onChange={manejarCambio}
                 >
                   <option value="">Seleccione un alumno</option>
-                  {alumnos.map((alumno) => (
+                  {alumnosFiltrados.map((alumno) => (
                     <option key={alumno.id} value={alumno.id}>
                       {alumno.nombre}
                     </option>
@@ -213,7 +257,7 @@ function Reportes() {
                   onChange={manejarCambio}
                 >
                   <option value="">Seleccione un curso</option>
-                  {cursos.map((curso) => (
+                  {filteredCursos.map((curso) => (
                     <option key={curso.id} value={curso.id}>
                       {curso.nombre}
                     </option>
@@ -226,6 +270,8 @@ function Reportes() {
                   name="nota"
                   value={formulario.nota}
                   onChange={manejarCambio}
+                  min="0"
+                  max="10"
                 />
                 <label>Asistencia</label>
                 <input
