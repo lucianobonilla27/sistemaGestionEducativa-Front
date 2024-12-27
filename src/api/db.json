@@ -29,7 +29,7 @@
   ],
   "docentes": [
     {
-      "id": "1",
+      "id": "4",
       "nombre": "María López",
       "cursos": [
         "1",
@@ -39,7 +39,7 @@
       "estado": "Activo"
     },
     {
-      "id": "2",
+      "id": "5",
       "nombre": "José Martínez",
       "cursos": [
         "2"
@@ -139,7 +139,7 @@
       "email": "docente@docente.com",
       "password": "docente",
       "role": "docente",
-      "personaId": "1"
+      "personaId": "4"
     },
     {
       "id": "3",
@@ -154,6 +154,13 @@
       "password": "finanzas",
       "role": "finanzas",
       "personaId": null
+    },
+    {
+      "id": "5",
+      "email": "fedebonilla@yahoo.com",
+      "password": "docente",
+      "role": "docente",
+      "personaId": "08a3eecd-1c05-448c-9b2d-061fb7b024df"
     }
   ]
 }

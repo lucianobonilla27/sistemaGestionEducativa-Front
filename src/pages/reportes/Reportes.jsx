@@ -24,23 +24,29 @@ function Reportes() {
 
   // Filtrar reportes según el rol del usuario
   const reportesFiltrados = reportes
-  .filter((reporte) => {
-    if (user.role === "admin") return true; // Admin ve todos los reportes
-    // Docente solo ve los reportes de los cursos que dicta
-    const cursoPerteneceAlDocente = persona?.cursos.includes(reporte.cursoId);
-    return cursoPerteneceAlDocente;
-  })
-  .filter((reporte) => {
-    if (tipoReporte === "Todos") return true;
-    if (tipoReporte === "Aprobados") return reporte.nota >= 7;
-    if (tipoReporte === "Reprobados") return reporte.nota < 7;
-    return true;
-  })
-  .map((reporte) => ({
-    ...reporte,
-    alumnoNombre: alumnos.find((a) => a.id === reporte.alumnoId)?.nombre || "Desconocido",
-    cursoNombre: cursos.find((c) => c.id === reporte.cursoId)?.nombre || "Desconocido",
-  }));
+    .filter((reporte) => {
+      if (user.role === "admin") return true; // Admin ve todos los reportes
+      if (user.role === "docente") {
+        // Docente solo ve reportes de los cursos que dicta
+        return persona?.cursos.includes(reporte.cursoId);
+      }
+      if (user.role === "alumno") {
+        // Alumno solo ve sus propios reportes
+        return reporte.alumnoId === persona?.id;
+      }
+      return false;
+    })
+    .filter((reporte) => {
+      if (tipoReporte === "Todos") return true;
+      if (tipoReporte === "Aprobados") return reporte.nota >= 7;
+      if (tipoReporte === "Reprobados") return reporte.nota < 7;
+      return true;
+    })
+    .map((reporte) => ({
+      ...reporte,
+      alumnoNombre: alumnos.find((a) => a.id === reporte.alumnoId)?.nombre || "Desconocido",
+      cursoNombre: cursos.find((c) => c.id === reporte.cursoId)?.nombre || "Desconocido",
+    }));
 
   const manejarCambioReporte = (e) => setTipoReporte(e.target.value);
 
@@ -69,34 +75,38 @@ function Reportes() {
     }
   };
 
-  // Filtrar alumnos para mostrar solo aquellos que pertenecen a los cursos del docente
-const alumnosFiltrados = alumnos.filter((alumno) => {
-  if (user.role === "admin") {
-    return true; // Si es admin, muestra todos los alumnos
-  }
-  // Si no es admin, filtra los alumnos que están inscritos en los cursos que el docente dicta
-  return alumno.cursos.some((cursoId) => persona?.cursos.includes(cursoId));
-});
-
-
-const filtrarCursosPorAlumno = (alumnoId) => {
-  if (user.role === "admin") {
-    // Admin puede ver todos los cursos
-    const alumno = alumnos.find((a) => a.id === alumnoId);
-    setFilteredCursos(cursos.filter((curso) => alumno?.cursos.includes(curso.id)));
-  } else {
-    // Docente ve solo los cursos que dicta y que el alumno cursa
-    const alumno = alumnos.find((a) => a.id === alumnoId);
-    if (alumno) {
-      const cursosDisponibles = alumno.cursos.filter((cursoId) =>
-        persona.cursos.includes(cursoId)
-      );
-      setFilteredCursos(cursos.filter((curso) => cursosDisponibles.includes(curso.id)));
-    } else {
-      setFilteredCursos([]);
+  const alumnosFiltrados = alumnos.filter((alumno) => {
+    if (user.role === "admin") {
+      return true; // Admin puede ver todos los alumnos
     }
-  }
-};
+
+    if (user.role === "docente" && Array.isArray(persona?.cursos)) {
+      // Filtra los alumnos inscritos en los cursos dictados por el docente
+      return alumno.cursos.some((cursoId) => persona.cursos.includes(cursoId));
+    }
+
+    // Si es un alumno o el rol no es válido, no se muestran alumnos
+    return false;
+  });
+
+  const filtrarCursosPorAlumno = (alumnoId) => {
+    if (user.role === "admin") {
+      // Admin puede ver todos los cursos
+      const alumno = alumnos.find((a) => a.id === alumnoId);
+      setFilteredCursos(cursos.filter((curso) => alumno?.cursos.includes(curso.id)));
+    } else {
+      // Docente ve solo los cursos que dicta y que el alumno cursa
+      const alumno = alumnos.find((a) => a.id === alumnoId);
+      if (alumno) {
+        const cursosDisponibles = alumno.cursos.filter((cursoId) =>
+          persona.cursos.includes(cursoId)
+        );
+        setFilteredCursos(cursos.filter((curso) => cursosDisponibles.includes(curso.id)));
+      } else {
+        setFilteredCursos([]);
+      }
+    }
+  };
 
 
   const guardarReporte = () => {
@@ -128,13 +138,20 @@ const filtrarCursosPorAlumno = (alumnoId) => {
     }
   };
 
+
+
+
+
   return (
     <div className="reportes-container">
       <h1 className="text-center my-4">Gestión de Reportes</h1>
 
-      <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
-        Crear Reporte
-      </button>
+      {user.role !== "alumno" && (
+        <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
+          Crear Reporte
+        </button>
+      )}
+
 
       <div className="mb-3">
         <label htmlFor="tipoReporte" className="form-label">Seleccionar tipo de reporte:</label>
@@ -159,7 +176,10 @@ const filtrarCursosPorAlumno = (alumnoId) => {
               <th>Curso</th>
               <th>Nota</th>
               <th>Asistencia</th>
-              <th>Acciones</th>
+              {
+                user.role == 'alumno' ? <th hidden>Acciones</th> : <th>Acciones</th>
+              }
+
             </tr>
           </thead>
           <tbody>
@@ -170,20 +190,25 @@ const filtrarCursosPorAlumno = (alumnoId) => {
                 <td>{reporte.cursoNombre}</td>
                 <td>{reporte.nota}</td>
                 <td>{reporte.asistencia}</td>
-                <td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => abrirModal(reporte)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => confirmarEliminar(reporte.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
+                {user.role == 'alumno' ? <td hidden></td> :
+                  <td>
+                    <>
+                      <button
+                        className="btn btn-warning btn-sm me-2"
+                        onClick={() => abrirModal(reporte)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => confirmarEliminar(reporte.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </>
+                  
+                  </td>}
+
               </tr>
             ))}
           </tbody>
