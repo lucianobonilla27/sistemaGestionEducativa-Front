@@ -56,7 +56,7 @@ function AppRoutes() {
           <Route
             path="/pagos"
             element={
-              <ProtectedRoute requiredRole={["admin", "finanzas"]}>
+              <ProtectedRoute requiredRole={["admin", "finanzas", "alumno"]}>
                 <Pagos />
               </ProtectedRoute>
             }

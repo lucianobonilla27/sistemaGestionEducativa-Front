@@ -1,11 +1,36 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook } from "react-icons/fa";
+import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
+import "./navbar.css"; // Archivo CSS personalizado
 
 function Navbar() {
-  const { user, logout } = useUser();
+  const { user, logout, persona } = useUser();
+
+  const routesByRole = {
+    admin: [
+      { path: "/cursos", label: "Cursos", icon: <FaBook /> },
+      { path: "/alumnos", label: "Alumnos", icon: <FaUserGraduate /> },
+      { path: "/docentes", label: "Docentes", icon: <FaChalkboardTeacher /> },
+      { path: "/pagos", label: "Pagos", icon: <FaMoneyBill /> },
+      { path: "/reportes", label: "Reportes", icon: <FaFileAlt /> },
+    ],
+    docente: [
+      { path: "/cursos", label: "Cursos", icon: <FaBook /> },
+      { path: "/reportes", label: "Reportes", icon: <FaFileAlt /> },
+    ],
+    finanzas: [
+      { path: "/pagos", label: "Pagos", icon: <FaMoneyBill /> },
+    ],
+    alumno: [
+      { path: "/pagos", label: "Pagos", icon: <FaMoneyBill /> },
+      { path: "/reportes", label: "Reportes", icon: <FaFileAlt /> },
+    ],
+  };
+
+  const userRoutes = user?.role ? routesByRole[user.role] || [] : [];
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           <FaHome className="me-2" /> SmartEdu
@@ -22,36 +47,39 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            {userRoutes.map((route) => (
+              <li key={route.path} className="nav-item">
+                <Link className="nav-link" to={route.path}>
+                  {route.icon} {route.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link" to="/cursos">
-                <FaBook className="me-2" /> Cursos
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/alumnos">
-                <FaUserGraduate className="me-2" /> Alumnos
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/docentes">
-                <FaChalkboardTeacher className="me-2" /> Docentes
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/pagos">
-                <FaMoneyBill className="me-2" /> Pagos
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/reportes">
-                <FaFileAlt className="me-2" /> Reportes
-              </Link>
-            </li>
-            {user && (
-              <button className="btn btn-outline-danger" onClick={logout}>
-                Cerrar Sesión
-              </button>
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <span className="nav-link text-light fw-bold">
+                    {persona ? `Bienvenido, ${persona.nombre}` : "Cargando..."}
+                  </span>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-icon"
+                    onClick={logout}
+                    title="Cerrar Sesión"
+                  >
+                    <FaSignOutAlt size={20} />
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
+                <Link className="btn btn-icon" to="/login" title="Iniciar Sesión">
+                  <FaSignInAlt size={20} />
+                </Link>
+              </li>
             )}
           </ul>
         </div>

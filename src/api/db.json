@@ -7,7 +7,8 @@
         "1",
         "2"
       ],
-      "estado": "Activo"
+      "estado": "Activo",
+      "familiaId": "fam1"
     },
     {
       "id": "2",
@@ -15,7 +16,8 @@
       "cursos": [
         "3"
       ],
-      "estado": "Inactivo"
+      "estado": "Inactivo",
+      "familiaId": "fam2"
     },
     {
       "id": "3",
@@ -24,7 +26,8 @@
         "2",
         "3"
       ],
-      "estado": "Activo"
+      "estado": "Activo",
+      "familiaId": "fam3"
     }
   ],
   "docentes": [
@@ -79,21 +82,32 @@
       "alumnoId": "1",
       "concepto": "Matrícula",
       "monto": 5000,
-      "estado": "Pendiente"
+      "estado": "Completado",
+      "descuento": 0
     },
     {
       "id": "2",
       "alumnoId": "2",
-      "concepto": "Cuota Mensual",
-      "monto": 2500,
-      "estado": "Completado"
+      "concepto": "Mensualidad",
+      "monto": "2510",
+      "estado": "Completado",
+      "descuento": 0
     },
     {
       "id": "c778d0e9-1f8c-4c1a-a460-fa5ef08637d3",
-      "alumnoId": "98629db6-d74f-420b-8e90-987dd90aadbc",
-      "concepto": "Inscripción",
-      "monto": "4007",
-      "estado": "Pendiente"
+      "alumnoId": "1",
+      "concepto": "Otro",
+      "monto": "4000",
+      "estado": "Pendiente",
+      "descuento": 0
+    },
+    {
+      "id": "925b02a9-c74d-4855-be8a-4cf8dfa2a8e3",
+      "alumnoId": "3",
+      "concepto": "Mensualidad",
+      "monto": "1000",
+      "estado": "Pendiente",
+      "descuento": 0
     }
   ],
   "reportes": [
