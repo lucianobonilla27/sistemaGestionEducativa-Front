@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { usePagos } from "../../context/PagosContext";
 import { useAlumnos } from "../../context/AlumnosContext";
-import { useUser } from "../../context/UserContext"; 
+import { useUser } from "../../context/UserContext";
 import "./pagos.css";
 
 function Pagos() {
   const { pagos, actualizarPago, crearPago, editarPago } = usePagos();
   const { alumnos } = useAlumnos();
-  const { user } = useUser(); 
+  const { user } = useUser();
   const [filtro, setFiltro] = useState("Todos");
   const [formulario, setFormulario] = useState({
     id: null,
@@ -78,15 +78,17 @@ function Pagos() {
     alert("Pago marcado como pendiente.");
   };
 
-  // Filtrar pagos según el role del user
+  // Filtrar pagos según el rol del usuario
   const pagosFiltrados = pagos.filter((pago) => {
     if (user.role === "alumno") {
-      return pago.alumnoId === user.alumnoId; // Solo pagos del alumno actual
+      // Mostrar solo los pagos del alumno que inició sesión
+      return pago.alumnoId === user.personaId;
     }
     if (filtro === "Pendiente") return pago.estado === "Pendiente";
     if (filtro === "Completado") return pago.estado === "Completado";
     return true;
   });
+
 
   const conceptos = ["Matrícula", "Mensualidad", "Materiales", "Otro"];
 
@@ -95,29 +97,29 @@ function Pagos() {
 
       {user.role != "alumno" && (
         <>
-         <h1 className="text-center my-4">Gestión de Pagos</h1>
+          <h1 className="text-center my-4">Gestión de Pagos</h1>
 
-         <div className="resumen-pagos d-flex justify-content-between my-3">
-           <div className="card p-3">
-             <h5>Pagos Pendientes</h5>
-             <p>{pagos.filter((p) => p.estado === "Pendiente").length}</p>
-           </div>
-           <div className="card p-3">
-             <h5>Pagos Completados</h5>
-             <p>{pagos.filter((p) => p.estado === "Completado").length}</p>
-           </div>
-           <div className="card p-3">
-             <h5>Total Monto Pagado</h5>
-             <p>
-               ${pagos
-                 .filter((p) => p.estado === "Completado")
-                 .reduce((sum, p) => sum + parseFloat(p.monto), 0)}
-             </p>
-           </div>
-         </div>
-         </>
+          <div className="resumen-pagos d-flex justify-content-between my-3">
+            <div className="card p-3">
+              <h5>Pagos Pendientes</h5>
+              <p>{pagos.filter((p) => p.estado === "Pendiente").length}</p>
+            </div>
+            <div className="card p-3">
+              <h5>Pagos Completados</h5>
+              <p>{pagos.filter((p) => p.estado === "Completado").length}</p>
+            </div>
+            <div className="card p-3">
+              <h5>Total Monto Pagado</h5>
+              <p>
+                ${pagos
+                  .filter((p) => p.estado === "Completado")
+                  .reduce((sum, p) => sum + parseFloat(p.monto), 0)}
+              </p>
+            </div>
+          </div>
+        </>
       )}
-     
+
 
       {(user.role === "admin" || user.role === "finanzas") && (
         <button className="btn btn-primary mb-3" onClick={() => abrirModal()}>
@@ -150,10 +152,15 @@ function Pagos() {
               <th>Concepto</th>
               <th>Monto</th>
               <th>Estado</th>
-              <th>Acciones</th>
+              {user.role !== "alumno" ? <th>Acciones</th> : null}
+
             </tr>
           </thead>
           <tbody>
+            {pagosFiltrados.length === 0 && (
+              <p className="text-center text-muted">No se encontraron pagos para este alumno.</p>
+            )}
+
             {pagosFiltrados.map((pago) => (
               <tr key={pago.id}>
                 <td hidden>{pago.id}</td>
@@ -163,7 +170,7 @@ function Pagos() {
                 <td className={`text-${pago.estado === "Pendiente" ? "warning" : "success"}`}>
                   {pago.estado}
                 </td>
-                <td>
+                {user.role !== "alumno" ? <td>
                   {(user.role === "admin" || user.role === "finanzas") && (
                     <button
                       className="btn btn-warning btn-sm me-2"
@@ -189,7 +196,8 @@ function Pagos() {
                       </button>
                     )
                   )}
-                </td>
+                </td> : null}
+
               </tr>
             ))}
           </tbody>
