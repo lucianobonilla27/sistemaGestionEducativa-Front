@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaMoneyBill, FaFileAlt, FaBook, FaSignInAlt, FaSignOutAlt, FaUser  } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
 import "./navbar.css"; // Archivo CSS personalizado
 
@@ -8,6 +8,7 @@ function Navbar() {
 
   const routesByRole = {
     admin: [
+      { path: "/usuarios", label: "Usuarios", icon: <FaUser  /> },
       { path: "/cursos", label: "Cursos", icon: <FaBook /> },
       { path: "/alumnos", label: "Alumnos", icon: <FaUserGraduate /> },
       { path: "/docentes", label: "Docentes", icon: <FaChalkboardTeacher /> },

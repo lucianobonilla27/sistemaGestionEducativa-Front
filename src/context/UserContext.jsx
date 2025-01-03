@@ -8,31 +8,51 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Usuario autenticado
   const [persona, setPersona] = useState(null); // Alumno o docente relacionado
+  const [usuarios, setUsuarios] = useState([]); // Lista de usuarios
   const [loading, setLoading] = useState(false);
 
-const login = async (email, password) => {
-  setLoading(true);
-  try {
-    const response = await axios.get("http://localhost:4000/usuarios");
-    const usuario = response.data.find(
-      (u) => u.email === email && u.password === password
-    );
+  // Cargar todos los usuarios
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://localhost:4000/usuarios");
+        setUsuarios(response.data);
+      } catch (error) {
+        console.error("Error al cargar usuarios:", error);
+        setUsuarios([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (usuario) {
-      setUser(usuario); // Inicia sesión asignando el usuario
-      return true; // Devuelve true si las credenciales son correctas
-    } else {
-      setUser(null); // Asegúrate de que no haya datos residuales
-      return false; // Devuelve false si las credenciales son incorrectas
+    fetchUsuarios();
+  }, []);
+
+  // Login
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:4000/usuarios");
+      const usuario = response.data.find(
+        (u) => u.email === email && u.password === password
+      );
+
+      if (usuario) {
+        setUser(usuario);
+        return true;
+      } else {
+        setUser(null);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      setUser(null);
+      return false;
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error al iniciar sesión:", error);
-    setUser(null);
-    return false;
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   // Cargar datos relacionados con el usuario autenticado
   useEffect(() => {
@@ -68,6 +88,21 @@ const login = async (email, password) => {
     fetchPersona();
   }, [user]);
 
+  // Crear usuario
+  const crearUsuario = async (usuario) => {
+    setLoading(true);
+    console.log("Datos enviados a crearUsuario:", usuario);
+    try {
+      const response = await axios.post("http://localhost:4000/usuarios", usuario);
+      setUsuarios([...usuarios, response.data]); // Actualizar la lista local de usuarios
+    } catch (error) {
+      console.error("Error al crear usuario:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Cerrar sesión
   const logout = () => {
     setUser(null);
@@ -75,7 +110,17 @@ const login = async (email, password) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, persona, login, logout, loading }}>
+    <UserContext.Provider
+      value={{
+        user,
+        persona,
+        usuarios,
+        login,
+        logout,
+        crearUsuario,
+        loading,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

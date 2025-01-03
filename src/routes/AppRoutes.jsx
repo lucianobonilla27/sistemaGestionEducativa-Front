@@ -7,6 +7,7 @@ import Pagos from "../pages/pagos/Pagos";
 import Reportes from "../pages/reportes/Reportes";
 import Cursos from "../pages/cursos/Cursos";
 import Login from "../pages/login/Login";
+import Usuarios from "../pages/usuarios/Usuarios";
 import Unauthorized from "../pages/unathorized/Unauthorized";
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -28,6 +29,15 @@ function AppRoutes() {
             element={
               <ProtectedRoute requiredRole={["admin", "docente"]}>
                 <Cursos />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/usuarios"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <Usuarios />
               </ProtectedRoute>
             }
           />

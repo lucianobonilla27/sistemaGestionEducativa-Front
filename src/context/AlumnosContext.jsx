@@ -24,6 +24,7 @@ export const AlumnosProvider = ({ children }) => {
     try {
       const response = await axios.post(API_URL, nuevoAlumno);
       setAlumnos([...alumnos, response.data]);
+      return response.data;
     } catch (error) {
       console.error("Error al agregar alumno:", error);
     }

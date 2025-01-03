@@ -22,6 +22,7 @@ export const DocentesProvider = ({ children }) => {
     try {
       const response = await axios.post(API_URL, nuevoDocente);
       setDocentes([...docentes, response.data]);
+      return response.data;
     } catch (error) {
       console.error("Error al agregar docente:", error);
     }

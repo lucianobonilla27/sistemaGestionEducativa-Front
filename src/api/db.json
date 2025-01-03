@@ -28,6 +28,22 @@
       ],
       "estado": "Activo",
       "familiaId": "fam3"
+    },
+    {
+      "id": "f44444f4-2823-4f9b-bf40-3ac80e7f8426",
+      "nombre": "Benjamin Bonilla",
+      "cursos": [
+        "d8eb0714-1a24-4272-90a7-bd4de1b49f85"
+      ],
+      "estado": "Activo"
+    },
+    {
+      "id": "8ac14feb-8bda-4ca7-a9ca-f8d98da467f8",
+      "nombre": "Luciano",
+      "estado": "Activo",
+      "cursos": [
+        "d8eb0714-1a24-4272-90a7-bd4de1b49f85"
+      ]
     }
   ],
   "docentes": [
@@ -53,7 +69,8 @@
       "id": "08a3eecd-1c05-448c-9b2d-061fb7b024df",
       "nombre": "Federico Bonilla",
       "cursos": [
-        "3"
+        "3",
+        "d8eb0714-1a24-4272-90a7-bd4de1b49f85"
       ],
       "estado": "Activo"
     }
@@ -106,6 +123,14 @@
       "alumnoId": "3",
       "concepto": "Mensualidad",
       "monto": "1000",
+      "estado": "Pendiente",
+      "descuento": 0
+    },
+    {
+      "id": "975b7fc9-69c2-45a8-b9c7-35a2f1c233bd",
+      "alumnoId": "f44444f4-2823-4f9b-bf40-3ac80e7f8426",
+      "concepto": "Mensualidad",
+      "monto": "2000",
       "estado": "Pendiente",
       "descuento": 0
     }
@@ -175,6 +200,13 @@
       "password": "docente",
       "role": "docente",
       "personaId": "08a3eecd-1c05-448c-9b2d-061fb7b024df"
+    },
+    {
+      "id": "48603ce1-0249-4178-a67c-5094a530ce0a",
+      "email": "lucianobonilla28@gmail.com",
+      "password": "123",
+      "role": "alumno",
+      "personaId": "8ac14feb-8bda-4ca7-a9ca-f8d98da467f8"
     }
   ]
 }
