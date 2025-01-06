@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAlumnos } from "../../context/AlumnosContext";
 import { useDocentes } from "../../context/DocentesContext";
 import { useUser } from "../../context/UserContext";
@@ -10,16 +10,34 @@ function Usuarios() {
   const { agregarDocente, docentes } = useDocentes();
   const { usuarios, crearUsuario } = useUser();
   const { cursos } = useCursos();
-  const [formulario, setFormulario] = useState({
-    email: "",
-    password: "",
-    role: "alumno",
-    nombre: "",
-    estado: "Activo",
-    cursos: [],
-  });
 
+  const [formulario, setFormulario] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [isAsignacion, setIsAsignacion] = useState(false);
+
+  // Filtrar alumnos y docentes sin usuario
+  const alumnosSinUsuario = alumnos.filter(
+    (alumno) => !usuarios.some((usuario) => usuario.personaId === alumno.id)
+  );
+
+  const docentesSinUsuario = docentes.filter(
+    (docente) => !usuarios.some((usuario) => usuario.personaId === docente.id)
+  );
+
+  useEffect(() => {
+    setFormulario(
+      isAsignacion
+        ? { email: "", password: "", role: "alumno", personaId: "" }
+        : {
+          email: "",
+          password: "",
+          role: "alumno",
+          nombre: "",
+          estado: "Activo",
+          cursos: [],
+        }
+    );
+  }, [isAsignacion]);
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -29,57 +47,61 @@ function Usuarios() {
   const manejarCursoSeleccionado = (cursoId) => {
     setFormulario((prevFormulario) => {
       const cursosSeleccionados = prevFormulario.cursos.includes(cursoId)
-        ? prevFormulario.cursos.filter((id) => id !== cursoId) // Desmarcar
-        : [...prevFormulario.cursos, cursoId]; // Marcar
-
+        ? prevFormulario.cursos.filter((id) => id !== cursoId)
+        : [...prevFormulario.cursos, cursoId];
       return { ...prevFormulario, cursos: cursosSeleccionados };
     });
   };
 
   const manejarRegistro = async (e) => {
     e.preventDefault();
-    const { email, password, role, nombre, estado, cursos } = formulario;
-    console.log("Formulario enviado:", formulario);
-  
+    const { email, password, role, personaId, nombre, estado, cursos } = formulario;
+
     try {
-      if (role === "alumno") {
-        const alumnoData = { id: crypto.randomUUID(), nombre, estado, cursos };
-        console.log("Enviando datos de alumno:", alumnoData);
-        const alumno = await agregarAlumno(alumnoData);
-  
-        if (!alumno?.id) throw new Error("Alumno no creado correctamente");
-  
+      if (isAsignacion) {
+        if (!personaId) {
+          alert("Debe seleccionar una persona existente para asignar.");
+          return;
+        }
         await crearUsuario({
           id: crypto.randomUUID(),
           email,
           password,
           role,
-          personaId: alumno.id,
-        });
-      } else if (role === "docente") {
-        const docenteData = { id: crypto.randomUUID(), nombre, estado, cursos };
-        console.log("Enviando datos de docente:", docenteData);
-        const docente = await agregarDocente(docenteData);
-  
-        if (!docente?.id) throw new Error("Docente no creado correctamente");
-  
-        await crearUsuario({
-          id: crypto.randomUUID(),
-          email,
-          password,
-          role,
-          personaId: docente.id,
+          personaId,
         });
       } else {
-        await crearUsuario({
-          id: crypto.randomUUID(),
-          email,
-          password,
-          role,
-          personaId: null,
-        });
+        if (role === "alumno") {
+          const alumno = await agregarAlumno({ id: crypto.randomUUID(), nombre, estado, cursos });
+          if (!alumno?.id) throw new Error("Alumno no creado correctamente");
+          await crearUsuario({
+            id: crypto.randomUUID(),
+            email,
+            password,
+            role,
+            personaId: alumno.id,
+          });
+        } else if (role === "docente") {
+          const docente = await agregarDocente({ id: crypto.randomUUID(), nombre, estado, cursos });
+          if (!docente?.id) throw new Error("Docente no creado correctamente");
+          await crearUsuario({
+            id: crypto.randomUUID(),
+            email,
+            password,
+            role,
+            personaId: docente.id,
+          });
+        } else {
+          await crearUsuario({
+            id: crypto.randomUUID(),
+            email,
+            password,
+            role,
+            personaId: null,
+          });
+        }
       }
-  
+
       alert("Usuario registrado exitosamente");
       setShowModal(false);
     } catch (error) {
@@ -87,7 +109,6 @@ function Usuarios() {
       alert("Error al registrar usuario");
     }
   };
-  
 
   const obtenerNombreYEstado = (usuario) => {
     if (usuario.role === "alumno") {
@@ -109,12 +130,26 @@ function Usuarios() {
   return (
     <div className="usuarios-container">
       <h1 className="text-center my-4">Gestión de Usuarios</h1>
-      <button
-        className="btn btn-primary mb-3"
-        onClick={() => setShowModal(true)}
-      >
-        Crear Usuario
-      </button>
+      <div className="d-flex justify-content-between mb-3">
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setIsAsignacion(false);
+            setShowModal(true);
+          }}
+        >
+          Crear Usuario
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            setIsAsignacion(true);
+            setShowModal(true);
+          }}
+        >
+          Asignar Usuario
+        </button>
+      </div>
 
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
@@ -147,7 +182,9 @@ function Usuarios() {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Crear Usuario</h5>
+                <h5 className="modal-title">
+                  {isAsignacion ? "Asignar Usuario" : "Crear Usuario"}
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -190,8 +227,25 @@ function Usuarios() {
                       <option value="finanzas">Finanzas</option>
                     </select>
                   </div>
-                  {(formulario.role === "alumno" ||
-                    formulario.role === "docente") && (
+                  {isAsignacion && (
+                    <div className="mb-3">
+                      <label>Asignar a:</label>
+                      <select
+                        className="form-select"
+                        name="personaId"
+                        value={formulario.personaId || ""}
+                        onChange={manejarCambio}
+                      >
+                        <option value="">Seleccione una persona</option>
+                        {(formulario.role === "alumno" ? alumnosSinUsuario : docentesSinUsuario).map((persona) => (
+                          <option key={persona.id} value={persona.id}>
+                            {persona.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  {!isAsignacion && (formulario.role === "alumno" || formulario.role === "docente") && (
                     <>
                       <div className="mb-3">
                         <label>Nombre</label>
@@ -218,13 +272,13 @@ function Usuarios() {
                       <div className="mb-3">
                         <label>Cursos</label>
                         <div className="form-check">
-                          {cursos.map((curso) => (
+                          {(cursos || []).map((curso) => (
                             <div key={curso.id} className="form-check">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
                                 value={curso.id}
-                                checked={formulario.cursos.includes(curso.id)}
+                                checked={formulario.cursos?.includes(curso.id) || false}
                                 onChange={() => manejarCursoSeleccionado(curso.id)}
                                 id={`curso-${curso.id}`}
                               />
@@ -244,10 +298,11 @@ function Usuarios() {
                     type="submit"
                     className="btn btn-primary w-100"
                   >
-                    Registrar
+                    {isAsignacion ? "Asignar Usuario" : "Registrar Usuario"}
                   </button>
                 </form>
               </div>
+
             </div>
           </div>
         </div>

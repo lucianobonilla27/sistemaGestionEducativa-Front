@@ -38,8 +38,8 @@
       "estado": "Activo"
     },
     {
-      "id": "8ac14feb-8bda-4ca7-a9ca-f8d98da467f8",
-      "nombre": "Luciano",
+      "id": "c5b1ebe0-24cd-4309-9857-7ceb3be4f56e",
+      "nombre": "Luciano Bonilla",
       "estado": "Activo",
       "cursos": [
         "d8eb0714-1a24-4272-90a7-bd4de1b49f85"
@@ -202,11 +202,25 @@
       "personaId": "08a3eecd-1c05-448c-9b2d-061fb7b024df"
     },
     {
-      "id": "48603ce1-0249-4178-a67c-5094a530ce0a",
-      "email": "lucianobonilla28@gmail.com",
+      "id": "c09408e9-b4a8-4f46-81ba-0c0d3f4e8fb9",
+      "email": "lucianobonilla27@gmail.com",
       "password": "123",
       "role": "alumno",
-      "personaId": "8ac14feb-8bda-4ca7-a9ca-f8d98da467f8"
+      "personaId": "c5b1ebe0-24cd-4309-9857-7ceb3be4f56e"
+    },
+    {
+      "id": "56301643-92d2-4cd2-98c5-3f07809aa31a",
+      "email": "anagarcia@gmail.com",
+      "password": "123",
+      "role": "alumno",
+      "personaId": "2"
+    },
+    {
+      "id": "33c2aa99-0f29-47db-a6f1-e6ee4183310e",
+      "email": "benjaminbonilla10@yahoo.com",
+      "password": "123",
+      "role": "alumno",
+      "personaId": "f44444f4-2823-4f9b-bf40-3ac80e7f8426"
     }
   ]
 }
