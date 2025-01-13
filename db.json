@@ -1,126 +1,136 @@
 {
-    "usuarios": [
-        {
-            "id_usuario": 1,
-            "email": "user1@example.com",
-            "contraseña": "password1",
-            "nombre": "Juan Pérez",
-            "estado": 1
-        },
-        {
-            "id_usuario": 2,
-            "email": "user2@example.com",
-            "contraseña": "password2",
-            "nombre": "María López",
-            "estado": 1
-        },
-        {
-            "id_usuario": 3,
-            "email": "user3@example.com",
-            "contraseña": "password3",
-            "nombre": "Carlos González",
-            "estado": 1
-        },
-        {
-            "id_usuario": 4,
-            "email": "user4@example.com",
-            "contraseña": "password4",
-            "nombre": "Ana Martínez",
-            "estado": 1
-        },
-        {
-            "id_usuario": 5,
-            "email": "user5@example.com",
-            "contraseña": "password5",
-            "nombre": "Pedro Sánchez",
-            "estado": 1
-        }
-    ],
-    "administrativos": [
-        {
-            "id_administrativo": 1
-        }
-    ],
-    "docentes": [
-        {
-            "id_docente": 2
-        },
-        {
-            "id_docente": 3
-        }
-    ],
-    "reportes": [
-        {
-            "id_reporte": 1,
-            "fecha": "2025-01-10",
-            "asistencia": "80%",
-            "observacion": "Todo bien",
-            "id_docente": 1,
-            "id_alumno": 1,
-            "id_curso": 1
-        },
-        {
-            "id_reporte": 2,
-            "fecha": "2025-01-11",
-            "asistencia": "70%",
-            "observacion": "Ausente",
-            "id_docente": 2,
-            "id_alumno": 2,
-            "id_curso": 2
-        }
-    ],
-    "pagos": [
-        {
-            "id_pago": 1,
-            "fecha": "2025-01-10",
-            "concepto": "Inscripción",
-            "monto": 1000.00,
-            "descuento": 0.10,
-            "id_alumno": 1,
-            "id_curso": 1
-        },
-        {
-            "id_pago": 2,
-            "fecha": "2025-01-11",
-            "concepto": "Mensualidad",
-            "monto": 500.00,
-            "descuento": 0.05,
-            "id_alumno": 2,
-            "id_curso": 2
-        }
-    ],
-    "alumnos": [
-        {
-            "id_alumno": 4
-        },
-        {
-            "id_alumno": 5
-        }
-    ],
-    "cursa": [
-        {
-            "id_alumno": 1,
-            "id_curso": 1,
-            "fecha_comienzo": "2025-01-10",
-            "fecha_fin": "2025-12-10"
-        },
-        {
-            "id_alumno": 2,
-            "id_curso": 2,
-            "fecha_comienzo": "2025-01-11",
-            "fecha_fin": "2025-12-11"
-        }
-    ],
-    "cursos": [
-        {
-            "id_curso": 1,
-            "nombre": "Matemáticas",
-            "precio": 5000.00
-        },
-        {
-            "id_curso": 2,
-            "nombre": "Historia",
-            "precio": 4000.00
-        }
-    ]
+  "usuarios": [
+    {
+      "id_usuario": 1,
+      "email": "user1@example.com",
+      "contraseña": "password1",
+      "nombre": "Juan Pérez",
+      "estado": 1
+    },
+    {
+      "id_usuario": 2,
+      "email": "user2@example.com",
+      "contraseña": "password2",
+      "nombre": "María López",
+      "estado": 1
+    },
+    {
+      "id_usuario": 3,
+      "email": "user3@example.com",
+      "contraseña": "password3",
+      "nombre": "Carlos González",
+      "estado": 1
+    },
+    {
+      "id_usuario": 4,
+      "email": "user4@example.com",
+      "contraseña": "password4",
+      "nombre": "Ana Martínez",
+      "estado": 1
+    },
+    {
+      "id_usuario": 5,
+      "email": "user5@example.com",
+      "contraseña": "password5",
+      "nombre": "Pedro Sánchez",
+      "estado": 1
+    },
+    {
+      "id_usuario": 6,
+      "email": "lucianobonilla28@gmail.com",
+      "contraseña": "123",
+      "nombre": "Luciano",
+      "estado": 1
+    }
+  ],
+  "administrativos": [
+    {
+      "id_administrativo": 1
+    }
+  ],
+  "docentes": [
+    {
+      "id_docente": 2
+    },
+    {
+      "id_docente": 3
+    }
+  ],
+  "reportes": [
+    {
+      "id_reporte": 1,
+      "fecha": "2025-01-10",
+      "asistencia": "80%",
+      "observacion": "Todo bien",
+      "id_docente": 1,
+      "id_alumno": 1,
+      "id_curso": 1
+    },
+    {
+      "id_reporte": 2,
+      "fecha": "2025-01-11",
+      "asistencia": "70%",
+      "observacion": "Ausente",
+      "id_docente": 2,
+      "id_alumno": 2,
+      "id_curso": 2
+    }
+  ],
+  "pagos": [
+    {
+      "id_pago": 1,
+      "fecha": "2025-01-10",
+      "concepto": "Inscripción",
+      "monto": 1000,
+      "descuento": 0.1,
+      "id_alumno": 1,
+      "id_curso": 1
+    },
+    {
+      "id_pago": 2,
+      "fecha": "2025-01-11",
+      "concepto": "Mensualidad",
+      "monto": 500,
+      "descuento": 0.05,
+      "id_alumno": 2,
+      "id_curso": 2
+    }
+  ],
+  "alumnos": [
+    {
+      "id_alumno": 4
+    },
+    {
+      "id_alumno": 5
+    },
+    {
+      "id_alumno": 6
+    }
+  ],
+  "cursa": [
+    {
+      "id_alumno": 1,
+      "id_curso": 1,
+      "fecha_comienzo": "2025-01-10",
+      "fecha_fin": "2025-12-10"
+    },
+    {
+      "id_alumno": 2,
+      "id_curso": 2,
+      "fecha_comienzo": "2025-01-11",
+      "fecha_fin": "2025-12-11"
+    }
+  ],
+  "cursos": [
+    {
+      "id_curso": 1,
+      "nombre": "Matemáticas",
+      "precio": 5000
+    },
+    {
+      "id_curso": 2,
+      "nombre": "Historia",
+      "precio": 4000
+    }
+  ]
 }
