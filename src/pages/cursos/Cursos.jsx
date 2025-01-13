@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useContext } from "react";
+import { CursosContext } from '../../context/CursosContext';
+import "./Cursos.css";
 
-const Cursos = () => {
+function Cursos() {
+  const { cursos } = useContext(CursosContext);
+
   return (
-    <div>
-      <h1>Cursos</h1>
+    <div className="container">
+      <h1 className="text-center my-4">Lista de Cursos</h1>
+      <ul className="list-group">
+        {cursos.map(curso => (
+          <li key={curso.id_curso} className="list-group-item">
+            {curso.nombre} - ${curso.precio.toFixed(2)}
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default Cursos
+export default Cursos;

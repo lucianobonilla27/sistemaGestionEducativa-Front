@@ -53,7 +53,7 @@
         {
             "id_reporte": 1,
             "fecha": "2025-01-10",
-            "asistencia": "SI",
+            "asistencia": "80%",
             "observacion": "Todo bien",
             "id_docente": 1,
             "id_alumno": 1,
@@ -62,7 +62,7 @@
         {
             "id_reporte": 2,
             "fecha": "2025-01-11",
-            "asistencia": "NO",
+            "asistencia": "70%",
             "observacion": "Ausente",
             "id_docente": 2,
             "id_alumno": 2,

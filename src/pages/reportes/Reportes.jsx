@@ -1,82 +1,30 @@
-import { useState } from "react";
-import "./reportes.css";
+import React, { useContext } from "react";
+import { ReportesContext } from '../../context/ReportesContext';
 
 function Reportes() {
-  // Datos simulados
-  const [alumnos] = useState([
-    { id: 1, nombre: "Juan Pérez", curso: "Matemáticas", nota: 8, asistencia: "85%" },
-    { id: 2, nombre: "Ana García", curso: "Historia", nota: 6, asistencia: "90%" },
-    { id: 3, nombre: "Carlos López", curso: "Física", nota: 9, asistencia: "95%" },
-  ]);
-
-  // Estado para el tipo de reporte
-  const [tipoReporte, setTipoReporte] = useState("Todos");
-
-  // Función para manejar el cambio del filtro
-  const manejarCambioReporte = (e) => setTipoReporte(e.target.value);
-
-  // Filtrar resultados según el tipo de reporte seleccionado
-  const resultadosFiltrados = alumnos.filter((alumno) => {
-    if (tipoReporte === "Todos") return true;
-    if (tipoReporte === "Aprobados") return alumno.nota >= 7;
-    if (tipoReporte === "Reprobados") return alumno.nota < 7;
-    return true;
-  });
+  const { reportes, usuarios, cursos, docentes } = useContext(ReportesContext);
 
   return (
-    <div className="reportes-container">
-      <h1 className="text-center my-4">Generación de Reportes</h1>
+    <div className="container">
+      <h1 className="text-center my-4">Lista de Reportes</h1>
+      <ul className="list-group">
+        {reportes.map(reporte => {
+          const alumno = usuarios.find(usuario => usuario.id_usuario === reporte.id_alumno);
+          const curso = cursos.find(curso => curso.id_curso === reporte.id_curso);
+          const docente = usuarios.find(usuario => usuario.id_usuario === reporte.id_docente);
 
-      {/* Selector para tipo de reporte */}
-      <div className="mb-3">
-        <label htmlFor="tipoReporte" className="form-label">Seleccionar tipo de reporte:</label>
-        <select
-          id="tipoReporte"
-          className="form-select"
-          value={tipoReporte}
-          onChange={manejarCambioReporte}
-        >
-          <option value="Todos">Todos</option>
-          <option value="Aprobados">Aprobados</option>
-          <option value="Reprobados">Reprobados</option>
-        </select>
-      </div>
-
-      {/* Tabla con resultados */}
-      <div className="table-responsive">
-        <table className="table table-striped table-bordered">
-          <thead className="table-primary">
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Curso</th>
-              <th>Nota</th>
-              <th>Asistencia</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resultadosFiltrados.map((alumno) => (
-              <tr key={alumno.id}>
-                <td>{alumno.id}</td>
-                <td>{alumno.nombre}</td>
-                <td>{alumno.curso}</td>
-                <td>{alumno.nota}</td>
-                <td>{alumno.asistencia}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Botón para exportar */}
-      <div className="text-center mt-4">
-        <button
-          className="btn btn-primary"
-          onClick={() => alert("Función de exportar no implementada aún")}
-        >
-          Exportar Reporte
-        </button>
-      </div>
+          return (
+            <li key={reporte.id_reporte} className="list-group-item">
+              <p><strong>Alumno:</strong> {alumno ? alumno.nombre : 'Alumno no encontrado'}</p>
+              <p><strong>Curso:</strong> {curso ? curso.nombre : 'Curso no encontrado'}</p>
+              <p><strong>Docente:</strong> {docente ? docente.nombre : 'Docente no encontrado'}</p>
+              <p><strong>Asistencia:</strong> {reporte.asistencia}</p>
+              <p><strong>Observación:</strong> {reporte.observacion}</p>
+              <p><strong>Fecha:</strong> {new Date(reporte.fecha).toLocaleDateString()}</p>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
