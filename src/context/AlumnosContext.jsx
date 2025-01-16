@@ -153,9 +153,36 @@ const AlumnosProvider = ({ children }) => {
     }
   };
 
-  const updateAlumno = async (id_alumno, data) => {
+  // const updateAlumno = async (id_alumno, data) => {
+  //   try {
+  //     await axios.put(URL + `/usuarios/${id_alumno}`, {
+  //       id_usuario: id_alumno,
+  //       nombre: data.nombre,
+  //       email: data.email,
+  //     });
+
+  
+
+  //     alert("Alumno actualizado exitosamente");
+  //   } catch (error) {
+  //     console.error("Error al actualizar el alumno:", error);
+  //     alert("No se pudo actualizar el alumno");
+  //   }
+  // };
+
+  const updateAlumno = async (id_usuario, data) => {
     try {
-      await axios.put(URL + `/usuarios/${id_alumno}`, {
+      const usuarioResponse = await axios.get(`${URL}/usuarios?id_usuario=${id_usuario}`);
+      const usuario = usuarioResponse.data[0]; // Obtener el primer resultado
+
+      if (!usuario) {
+        throw new Error(`No se encontró un usuario con id_usuario: ${id_usuario}`);
+      }
+
+      const jsonServerId = usuario.id;
+
+      await axios.put(URL + `/usuarios/${jsonServerId}`, {
+        id_usuario: id_usuario,
         nombre: data.nombre,
         email: data.email,
       });

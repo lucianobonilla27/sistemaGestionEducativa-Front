@@ -58,11 +58,9 @@
     },
     {
       "id_usuario": 8,
-      "email": "facurmedina@gmail.com",
-      "contraseña": "123",
-      "nombre": "facu",
-      "estado": 1,
-      "id": "a85b"
+      "nombre": "Facu",
+      "email": "facu@gmail.com",
+      "id": "13c3"
     }
   ],
   "administrativos": [
@@ -143,8 +141,8 @@
       "id": "ca1a"
     },
     {
-      "id_alumno": 8,
-      "id": "c436"
+      "id": "add2",
+      "id_alumno": 8
     }
   ],
   "cursa": [
