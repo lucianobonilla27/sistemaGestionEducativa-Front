@@ -5,69 +5,80 @@
       "email": "user1@example.com",
       "contraseña": "password1",
       "nombre": "Juan Pérez",
-      "estado": 1
+      "estado": 1,
+      "id": "bcdc"
     },
     {
       "id_usuario": 2,
       "email": "user2@example.com",
       "contraseña": "password2",
       "nombre": "María López",
-      "estado": 1
+      "estado": 1,
+      "id": "5fa4"
     },
     {
       "id_usuario": 3,
       "email": "user3@example.com",
       "contraseña": "password3",
       "nombre": "Carlos González",
-      "estado": 1
+      "estado": 1,
+      "id": "54cf"
     },
     {
       "id_usuario": 4,
       "email": "user4@example.com",
       "contraseña": "password4",
       "nombre": "Ana Martínez",
-      "estado": 1
+      "estado": 1,
+      "id": "b391"
     },
     {
       "id_usuario": 5,
       "email": "user5@example.com",
       "contraseña": "password5",
       "nombre": "Pedro Sánchez",
-      "estado": 1
+      "estado": 1,
+      "id": "fa83"
     },
     {
       "id_usuario": 6,
       "email": "lucianobonilla28@gmail.com",
       "contraseña": "123",
       "nombre": "Luciano",
-      "estado": 1
+      "estado": 1,
+      "id": "15be"
     },
     {
       "id_usuario": 7,
       "email": "haroanaceci@yahoo.com",
       "contraseña": "123",
       "nombre": "ceci",
-      "estado": 1
+      "estado": 1,
+      "id": "a2a4"
     },
     {
       "id_usuario": 8,
       "email": "facurmedina@gmail.com",
       "contraseña": "123",
       "nombre": "facu",
-      "estado": 1
+      "estado": 1,
+      "id": "a85b"
     }
   ],
   "administrativos": [
     {
-      "id_administrativo": 1
+      "id_administrativo": 1,
+      "id": "3ca4"
     }
   ],
   "docentes": [
     {
-      "id_docente": 2
+      "id_docente": 2,
+      "id": "bc43"
     },
     {
-      "id_docente": 3
+      "id_docente": 3,
+      "id": "62fa"
     }
   ],
   "reportes": [
@@ -78,7 +89,8 @@
       "observacion": "Todo bien",
       "id_docente": 1,
       "id_alumno": 1,
-      "id_curso": 1
+      "id_curso": 1,
+      "id": "647e"
     },
     {
       "id_reporte": 2,
@@ -87,7 +99,8 @@
       "observacion": "Ausente",
       "id_docente": 2,
       "id_alumno": 2,
-      "id_curso": 2
+      "id_curso": 2,
+      "id": "b158"
     }
   ],
   "pagos": [
@@ -98,8 +111,8 @@
       "monto": 1000,
       "descuento": 0.1,
       "id_alumno": 1,
-      "id_curso": 1
-     
+      "id_curso": 1,
+      "id": "9266"
     },
     {
       "id_pago": 2,
@@ -108,25 +121,30 @@
       "monto": 500,
       "descuento": 0.05,
       "id_alumno": 2,
-      "id_curso": 2
-   
+      "id_curso": 2,
+      "id": "7b2f"
     }
   ],
   "alumnos": [
     {
-      "id_alumno": 4
+      "id_alumno": 4,
+      "id": "ce0f"
     },
     {
-      "id_alumno": 5
+      "id_alumno": 5,
+      "id": "465c"
     },
     {
-      "id_alumno": 6
+      "id_alumno": 6,
+      "id": "0f5b"
     },
     {
-      "id_alumno": 7
+      "id_alumno": 7,
+      "id": "ca1a"
     },
     {
-      "id_alumno": 8
+      "id_alumno": 8,
+      "id": "c436"
     }
   ],
   "cursa": [
@@ -134,25 +152,29 @@
       "id_alumno": 1,
       "id_curso": 1,
       "fecha_comienzo": "2025-01-10",
-      "fecha_fin": "2025-12-10"
+      "fecha_fin": "2025-12-10",
+      "id": "8c48"
     },
     {
       "id_alumno": 2,
       "id_curso": 2,
       "fecha_comienzo": "2025-01-11",
-      "fecha_fin": "2025-12-11"
+      "fecha_fin": "2025-12-11",
+      "id": "8b72"
     }
   ],
   "cursos": [
     {
       "id_curso": 1,
       "nombre": "Matemáticas",
-      "precio": 5000
+      "precio": 5000,
+      "id": "363e"
     },
     {
       "id_curso": 2,
       "nombre": "Historia",
-      "precio": 4000
+      "precio": 4000,
+      "id": "7872"
     }
   ]
 }
