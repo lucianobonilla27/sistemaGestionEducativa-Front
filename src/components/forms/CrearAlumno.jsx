@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useUsuario } from '../../context/UsuarioContext';
+import React, { useState, useContext } from 'react';
+import { AlumnosContext } from '../../context/AlumnosContext';
 
 function CrearAlumno() {
-  const { crearAlumno } = useUsuario();
+  const { crearAlumno } = useContext(AlumnosContext);
   const [formData, setFormData] = useState({
     email: '',
     contraseña: '',
@@ -30,38 +30,40 @@ function CrearAlumno() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Crear Alumno</h2>
-      <label>
+      <label htmlFor="email" className="form-label">
         Email:
         <input
           type="email"
           name="email"
+          className="form-control"
           value={formData.email}
           onChange={handleInputChange}
           required
         />
       </label>
-      <label>
+      <label htmlFor="contraseña" className="form-label">
         Contraseña:
         <input
           type="password"
           name="contraseña"
+          className="form-control"
           value={formData.contraseña}
           onChange={handleInputChange}
           required
         />
       </label>
-      <label>
+      <label htmlFor="nombre" className="form-label">
         Nombre:
         <input
           type="text"
           name="nombre"
+          className="form-control"
           value={formData.nombre}
           onChange={handleInputChange}
           required
         />
       </label>
-      <button type="submit">Crear Alumno</button>
+      <button type="submit" className="btn btn-primary">Crear Alumno</button>
     </form>
   );
 }

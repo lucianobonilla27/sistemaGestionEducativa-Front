@@ -41,6 +41,20 @@
       "contraseña": "123",
       "nombre": "Luciano",
       "estado": 1
+    },
+    {
+      "id_usuario": 7,
+      "email": "haroanaceci@yahoo.com",
+      "contraseña": "123",
+      "nombre": "ceci",
+      "estado": 1
+    },
+    {
+      "id_usuario": 8,
+      "email": "facurmedina@gmail.com",
+      "contraseña": "123",
+      "nombre": "facu",
+      "estado": 1
     }
   ],
   "administrativos": [
@@ -85,6 +99,7 @@
       "descuento": 0.1,
       "id_alumno": 1,
       "id_curso": 1
+     
     },
     {
       "id_pago": 2,
@@ -94,6 +109,7 @@
       "descuento": 0.05,
       "id_alumno": 2,
       "id_curso": 2
+   
     }
   ],
   "alumnos": [
@@ -105,6 +121,12 @@
     },
     {
       "id_alumno": 6
+    },
+    {
+      "id_alumno": 7
+    },
+    {
+      "id_alumno": 8
     }
   ],
   "cursa": [
