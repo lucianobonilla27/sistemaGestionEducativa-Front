@@ -164,15 +164,21 @@
   "cursos": [
     {
       "id_curso": 1,
-      "nombre": "Matemáticas",
-      "precio": 5000,
+      "nombre": "Educación Física",
+      "precio": "10000",
       "id": "363e"
     },
     {
+      "id": "bd3f",
       "id_curso": 2,
-      "nombre": "Historia",
-      "precio": 4000,
-      "id": "7872"
+      "nombre": "Matemáticas",
+      "precio": "5000"
+    },
+    {
+      "id": "bdd7",
+      "id_curso": 3,
+      "nombre": "Ciencias Sociales",
+      "precio": "1"
     }
   ]
 }
